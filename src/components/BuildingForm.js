@@ -4,15 +4,18 @@ import { BuildingsContext } from '../App';
 
 function BuildingForm(props) {
     const { countriesList, building, selectedUser, show } = props;
+    // Define Dispatch
     const { dispatch } = useContext(BuildingsContext);
-    
+    // Define State for loading (on Add and on Edit)
+    const [loading, setLoading] = useState(false);
+    // Define form data state
     const [formData, setFormData] = useState({
         id: null,
         userId: selectedUser,
         name: '',
         country: '',
     });
-
+    // Function to clear form data
     const clear = useCallback(() => {
         setFormData({
             id: null,
@@ -22,6 +25,8 @@ function BuildingForm(props) {
         });
     }, [selectedUser]);
     
+    // checking for building(props) changing 
+    // if is selected building so set formData to building else clear formData
     useEffect(() => {
         if (building) {
             setFormData({
@@ -35,16 +40,29 @@ function BuildingForm(props) {
         }
     }, [building, clear]);
 
+    // Function to handle Save event 
+    // Edit if building is selected else Add
     const handleSave = (e) => {
         e.preventDefault();
+        setLoading(true);
         if (building) {
             dispatch({ type: actions.EDIT_BUILDING, payload: formData });
         } else {
             dispatch({ type: actions.ADD_BUILDING, payload: formData });
+            clear();
         }
-        clear();
-        props.close();
+        // props.close();
     }
+
+    // UseEffect to check if loading is true
+
+    useEffect(() => {
+        if (loading) {
+            setTimeout(() => {
+                setLoading(false);
+            }, 2000);
+        }
+    }, [loading]);
 
     return (
         <div className={show ? 'form-container show' : 'form-container'}>
@@ -52,12 +70,14 @@ function BuildingForm(props) {
                 <div className='form-body'>
                     <div className="form-group">
                         <label htmlFor="name">Name</label>
+                        {/* Name Building Input */}
                         <input type="text" className="input" id="name" placeholder="Building name"
                                 value={formData.name}
                                 onChange={e => setFormData({ ...formData, name: e.target.value})} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="location">Location</label>
+                        {/* List Coutries Select - Mapping countries list  */}
                         <select className="input" id="location"
                                 value={formData.country}
                                 onChange={e => setFormData({ ...formData, country: e.target.value})}>
@@ -71,11 +91,16 @@ function BuildingForm(props) {
                     </div>
                 </div>
                 <div className="form-actions">
-                    <button className="btn" onClick={(e) => {
+                    {/* Cancel Button */}
+                    <button className="btn saveBtn" onClick={(e) => {
                         e.preventDefault()
                         props.close()
                     }}>Cancel</button>
-                    <button type="submit" className="btn" onClick={e => handleSave(e)}>Save</button>
+                    {/* Save Button */}
+                    <button type="submit" className="btn saveBtn" 
+                            onClick={e => handleSave(e)}>
+                    Save {loading && <img src="/images/loading2.gif" alt="loading" style={{ width: '20px', marginLeft: '8px' }} />}
+                    </button>
                 </div>
             </form>
         </div>

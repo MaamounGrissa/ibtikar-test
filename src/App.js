@@ -46,6 +46,15 @@ function App() {
       <div className="App">
         <div className='app-container'>
           <div className='app-header'>
+            <div className='infos-container'>
+              <img src="/images/logo.png" alt='Logo' />
+              <div className='infos'>
+                <h2>Ibtikar Technical Test</h2>
+                <p>By <a href="https://maamoungrissa.me" target="_blanc" rel="noreferrer noopener">
+                    Maamoun Grissa</a></p>
+              </div>
+            </div>
+            {/* SELET USER - Maping users list - handle change event */}
             <select value={selectedUser} onChange={(e) => {
                   setSelectedBuilding(null);
                   setSelectedUser(e.target.value)
@@ -59,28 +68,29 @@ function App() {
             </select>
           </div>
           <div className='app-body'>
+            {/* BUILDING LIST + Dispatching remove building action if is selectedBuilding  */}
               <BuildingsList 
                   selectedUser={selectedUser} 
-                  buildings={state.buildings} 
                   selectBuilding={(build) => setSelectedBuilding(build)}
                   selectedBuilding={selectedBuilding}
                   openForm={() => setShowForm(true)}
-                  deleteBuilding={() => selectedBuilding && dispatch({ type: actions.REMOVE_BUILDING, payload: selectedBuilding.id })}
+                  deleteBuilding={() => selectedBuilding ? dispatch({ type: actions.REMOVE_BUILDING, payload: selectedBuilding.id }) : alert('No building selected')}
                   />
               <div className='app-view'>
                   <div className='view-header'>
                   { showForm ? selectedBuilding ? "Edit Building" : "Add Building" : "Map View"}
                   </div>
                   <div className='view-content'>
-                    <MapView buildings={state.buildings} 
-                                selectedBuilding={selectedBuilding} 
-                                selectedUser={selectedUser} 
-                                geoLocations={geoLocations} />
+                    {/* MAP VIEW */}
+                    <MapView selectedBuilding={selectedBuilding} 
+                              selectedUser={selectedUser} 
+                              geoLocations={geoLocations} />
+                    {/* BUILDING FORM (ADD / EDIT) */}
                     <BuildingForm  show={showForm}
-                                countriesList={countriesList} 
-                                building={selectedBuilding} 
-                                selectedUser={selectedUser} 
-                                close={() => setShowForm(false)} />
+                              countriesList={countriesList} 
+                              building={selectedBuilding} 
+                              selectedUser={selectedUser} 
+                              close={() => setShowForm(false)} />
                   </div>
               </div>
           </div>

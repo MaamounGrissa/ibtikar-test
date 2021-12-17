@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { BsFillPencilFill } from "react-icons/bs";
 import { BsFillTrashFill } from "react-icons/bs";
+import { BuildingsContext } from '../App';
 
 // Confirm Modal Component
 
@@ -27,11 +28,14 @@ const ConfirmModal = ({show, yes, no}) => {
 
 function BuildingsList(props) {
     /* Get selected user from props */
-    const { selectedUser, buildings, selectedBuilding } = props;
+    const { selectedUser, selectedBuilding } = props;
     /* Define state for filtred buildings */
     const [myBuildings, setMyBuilding] = useState([]);
     /* Define state for shoing confirm modal */
     const [showConfirmModal, setShowConfirmModal] = useState(false);
+    /* Get Buildings from context state */
+    const { state } = useContext(BuildingsContext);
+    const buildings = state.buildings;
 
     useEffect(() => {
         if (buildings && selectedUser) {
@@ -66,6 +70,7 @@ function BuildingsList(props) {
                                     <BsFillTrashFill onClick={(e) => {
                                         /* Building Delete Button */
                                         e.stopPropagation();
+                                        props.selectBuilding(building);
                                         setShowConfirmModal(true);
                                     }} />
                                 </div>
