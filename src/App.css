@@ -50,6 +50,14 @@ a {
   margin-bottom: 2%;
 }
 
+@media(max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
 .infos-container {
   display: flex;
   align-items: center;
